@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import ArtistCard from "./artist-card";
+import Loading from "./loading";
+import Error from "./error";
 
 class SearchResult extends Component {
   state = {
+    loading: false,
+    error: null,
     data: {
       similarartists: {
-        artist: [] 
-      }
-    }
+        artist: [],
+      },
+    },
   };
   componentDidMount() {
     this.fetchData(
@@ -15,19 +19,39 @@ class SearchResult extends Component {
     );
   }
   fetchData = async (url) => {
-    const response = await fetch(url);
-    const data = await response.json;
     this.setState({
-      data: data,
+      loading: true,
     });
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.error) {
+      this.setState({
+        loading: false,
+        error: true,
+        errorMensaje:data.message
+      });
+    } else {
+      this.setState({
+        loading: false,
+        data: data,
+      });
+    }
   };
   render() {
     return (
       <React.Fragment>
+        {this.state.loading && <Loading />}
+        {this.state.error && <Error errorMensaje= {this.state.errorMensaje}/>}
         <div className="container">
           <div className="row">
             {this.state.data.similarartists.artist.map((item, i) => {
-              return <ArtistCard img={item.image} titulo={item.name} key={i} />;
+              return (
+                <ArtistCard
+                  img={item.image[2]["#text"]}
+                  titulo={item.name}
+                  key={i}
+                />
+              );
             })}
           </div>
           <h1>{this.props.busqueda}</h1>
