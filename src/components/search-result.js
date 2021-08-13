@@ -13,11 +13,19 @@ class SearchResult extends Component {
       },
     },
   };
-  componentDidMount() {
+  
+  componentWillReceiveProps(e){   // Se ejecuta cada vez que el componente recibe informacion
+    let termino = e.busqueda;
+    this.fetchData(
+  "https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist="+ termino +"&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json"
+    );
+  };
+
+  /* componentDidMount() {
     this.fetchData(
       "https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=u2&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json"
     );
-  }
+  } */
   fetchData = async (url) => {
     this.setState({
       loading: true,
@@ -32,6 +40,7 @@ class SearchResult extends Component {
       });
     } else {
       this.setState({
+        error: false,
         loading: false,
         data: data,
       });

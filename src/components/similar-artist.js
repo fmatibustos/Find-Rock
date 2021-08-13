@@ -7,11 +7,24 @@ class SimilarArtist extends React.Component {
         <div className="row centrar margenes50  ">
        <div className="col-md-12">
            <h5>Similar Artist</h5>
+           <hr/>
        </div>
         </div>
         <hr />
+
+
         <div className="row">
-          <div className="col-md-3">
+
+        {this.props.data.slice(0,4).map((item, i)=>{
+          return(
+            <ArtistCard
+            img={item.image[3]["#text"]}
+            titulo={item.name}
+            key={i}
+            />
+          )
+        })}
+       {/*    <div className="col-md-3">
             <ArtistCard
               img="https://place-hold.it/350x350"
               titulo="Artista Similar"
@@ -34,7 +47,7 @@ class SimilarArtist extends React.Component {
               img="https://place-hold.it/350x350"
               titulo="Artista Similar"
             />
-          </div>
+          </div> */}
         </div>
       </React.Fragment>
     );

@@ -5,15 +5,79 @@ import SearchBar from "./components/search-bar";
 import "./page-artist.css";
 import u2 from "./img/u2-band.jpg";
 import SimilarArtist from "./components/similar-artist";
+import Loading from "./components/loading";
+import Error from "./components/error";
+
+
 
 class PageSearchResult extends Component {
-  state = {};
+  state = {
+    data: {
+      artist: {
+        image:[
+          {"#text":""},
+          {"#text":""},
+          {"#text":""},
+          {"#text":""},
+          {"#text":""}
+        ],
+        bio:{
+          summary:""
+        },
+        similar:{
+          artist: [
+            {
+              name: "",
+              url:"",
+              image:[
+                {"#text":""},
+                {"#text":""},
+                {"#text":""},
+                {"#text":""},
+                {"#text":""}
+              ]
+            }
+          ]
+        }
+      }
+    }
+  };
   handleChange = (e) => {
     console.log(e, "Soy el Handle desde page");
     this.setState({
       [e.target.name]: e.target.value,
     });
   };
+
+  componentDidMount() {
+    let artista = this.props.history.location.search.substr(1);
+    this.fetchData(
+      "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ artista +"&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json"
+      /* "https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=u2&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json" */
+    );
+  } 
+
+  fetchData = async (url) => {
+    this.setState({
+      loading: true,
+    });
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.error) {
+      this.setState({
+        loading: false,
+        error: true,
+        errorMensaje:data.message
+      });
+    } else {
+      this.setState({
+        error: false,
+        loading: false,
+        data: data,
+      });
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -21,34 +85,21 @@ class PageSearchResult extends Component {
           onChange={this.handleChange}
           busqueda={this.state.busqueda}
         />
+        {this.state.loading && <Loading />}
+        {this.state.error && <Error errorMensaje= {this.state.errorMensaje}/>}
         <div className="container">
           <div className="row centrar">
             <div className="col-md-3"></div>
             <div className="col-md-6">
-              <img className="pic-artist margenes50" src={u2} alt="" />
-              <h2>U2</h2>
+              <img className="pic-artist margenes50" src={this.state.data.artist.image[3]["#text"]} alt="" />
+              <h2>{this.state.data.artist.name}</h2>
               <p>
-                U2 es una banda de rock alternativo originaria de Dublín
-                (Irlanda), formada en 1976 por Bono (voz), The Edge (guitarra,
-                teclado y voz), Adam Clayton (bajo), y Larry Mullen Jr.
-                (batería). El sonido inicial de U2 tenía sus raíces en el
-                post-punk, pero posteriormente irán incorporando a su música
-                elementos de otros géneros: "Su cancionero es extenso y está
-                repleto de variaciones: desde el rock más clásico hasta el pop
-                más redondo, pasando por el coqueteo con la electrónica o los
-                homenajes al góspel".1​ A lo largo de la búsqueda musical de la
-                banda, han mantenido un sonido construido a base de
-                instrumentales melódicos, destacados por la textura musical de
-                The Edge y la voz expresiva de Bono, a las que se suma una base
-                característica integrada por la batería de Mullen y el bajo de
-                Clayton. Sus letras, a menudo ordenadas con imágenes
-                espirituales, se centran en temas personales y temática de
-                justicia social y paz.
+                {this.state.data.artist.bio.summary}
               </p>
             </div>
           </div>
           <div className="row">
-            <div><SimilarArtist/></div>
+            <div><SimilarArtist data={this.state.data.artist.similar.artist} /></div>
           </div>
         </div>
       </React.Fragment>

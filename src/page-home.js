@@ -3,6 +3,18 @@ import "./page-home.css";
 import logo from "./logo.svg";
 
 class PageHome extends React.Component {
+  handleSubmit = e =>{
+    e.preventDefault();
+    this.props.history.push("/busqueda?"+this.state.busqueda);
+  };
+  handleChange= e =>{ 
+    this.setState({
+      busqueda:e.target.value
+    })
+  }
+  state ={
+    busqueda:""
+  }
   render() {
     return (
       <div className="container">
@@ -19,13 +31,13 @@ class PageHome extends React.Component {
                   name="busqueda"
                   type="text"
                   id="buscar"
-                  value={this.props.busqueda}
+                  value={this.state.busqueda}
                   placeholder="Ingrese un valor"
-                  onChange={this.props.onChange}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="actions">
-                  <button className="btng">Buscar Artista Similar</button>
+                  <button className="btng" type="submit">Buscar Artista Similar</button>
                   <button className="btng">Historia del Rock and roll</button>
               </div>
             </form>

@@ -5,16 +5,25 @@ import SearchResult from "./components/search-result";
 /* import { Link} from "react-router-dom"; */
 
 class PageSearchResult extends Component {
-  state = {};
-  componentWillUnmount() {
-    console.log ("componentWillUnmount()", "antes del metodo render");        
-  }
-    
-  
-  handleChange = (e) => {
-    console.log(e, "Soy el Handle desde page");
+  state = {
+    busqueda: "",
+  };
+  componentDidMount() {
+    let search = this.props.history.location.search
+      .substr(1)
+      .replace("%20", " ");
+
     this.setState({
-      [e.target.name]: e.target.value,
+      busqueda: search
+    })
+  }
+  componentWillMount() {}
+  componentWillUnmount() {}
+
+  handleChange = e => {
+    /* console.log(e, "Soy el Handle desde page"); */
+    this.setState({
+      busqueda: e.target.value,
     });
   };
   render() {
@@ -23,7 +32,7 @@ class PageSearchResult extends Component {
         <SearchBar
           onChange={this.handleChange}
           busqueda={this.state.busqueda}
-        />
+        />  
         <SearchResult busqueda={this.state.busqueda} />
       </React.Fragment>
     );
