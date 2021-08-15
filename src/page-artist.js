@@ -3,10 +3,11 @@ import React, { Component } from "react";
 import SearchBar from "./components/search-bar";
 /* import SearchResult from "./components/search-result"; */
 import "./page-artist.css";
-import u2 from "./img/u2-band.jpg";
+/* import u2 from "./img/u2-band.jpg"; */
 import SimilarArtist from "./components/similar-artist";
 import Loading from "./components/loading";
 import Error from "./components/error";
+
 
 
 
@@ -42,6 +43,13 @@ class PageSearchResult extends Component {
       }
     }
   };
+
+componentDidUpdate(prevProps){
+  if (this.props.location!==prevProps.location){
+    this.fetchData();
+  }
+}
+
   handleChange = (e) => {
     console.log(e, "Soy el Handle desde page");
     this.setState({
@@ -50,14 +58,16 @@ class PageSearchResult extends Component {
   };
 
   componentDidMount() {
-    let artista = this.props.history.location.search.substr(1);
+    
     this.fetchData(
-      "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ artista +"&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json"
+      
       /* "https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=u2&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json" */
     );
   } 
 
-  fetchData = async (url) => {
+  fetchData = async () => {
+    let artista = this.props.history.location.search.substr(1);
+    let url =  "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ artista +"&api_key=1151fd202d4222ecbcb6d3c3c22a93f8&format=json";
     this.setState({
       loading: true,
     });
