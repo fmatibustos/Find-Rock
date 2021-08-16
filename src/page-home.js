@@ -6,17 +6,26 @@ import ReactDOM from "react-dom";
 import Modal from "./components/modal";
 
 class PageHome extends React.Component {
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     this.props.history.push("/busqueda?" + this.state.busqueda);
   };
-  handleChange = (e) => {
+
+  handleClick = e => {
+    console.log("me pincharon");
+    e.preventDefault();
     this.setState({
-      busqueda: e.target.value,
+      modal: true
+    });
+  };
+  handleChange = e => {
+    this.setState({
+      busqueda: e.target.value
     });
   };
   state = {
     busqueda: "",
+    modal: false
   };
   render() {
     return (
@@ -25,7 +34,7 @@ class PageHome extends React.Component {
           <div className="col-md-6 centrar">
             <img src={logo} alt="" id="logo" />
             <form
-              className="form-inLine"
+              className="form-inline"
               onSubmit={this.handleSubmit}
               name="FOrm"
             >
@@ -35,22 +44,24 @@ class PageHome extends React.Component {
                   type="text"
                   id="buscar"
                   value={this.state.busqueda}
-                  placeholder="Ingrese un valor"
+                  placeholder="Busca una banda"
                   onChange={this.handleChange}
                 />
               </div>
               <div className="actions">
                 <button className="btng" type="submit">
-                  Buscar Artista Similar
+                  Search Similar Artist
                 </button>
-                <button className="btng">Historia del Rock and roll</button>
+                <button className="btng" onClick={this.handleClick}>
+                  Music History
+                </button>
               </div>
             </form>
           </div>
         </div>
         {ReactDOM.createPortal(
-          <Modal>
-            <h4>Jaeger Test</h4>
+          <Modal estado={this.state.modal}>
+            <h4>Ejemplo de React</h4>
           </Modal>,
           document.getElementById("teleport")
         )}
@@ -58,5 +69,5 @@ class PageHome extends React.Component {
     );
   }
 }
-
 export default PageHome;
+
